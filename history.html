@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>History | Crypto Wallet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2 class="logo">CryptoWallet</h2>
+    <nav>
+      <ul>
+        <li onclick="goToPage('dashboard.html')">Dashboard</li>
+        <li onclick="goToPage('wallet.html')">Wallet</li>
+        <li onclick="goToPage('exchange.html')">Exchange</li>
+        <li class="active">History</li>
+        <li onclick="goToPage('settings.html')">Settings</li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <header class="header">
+      <div class="search">
+        <input type="text" placeholder="Поиск...">
+      </div>
+      <div class="profile">
+        <span>Привет, Admin</span>
+        <button id="logoutBtn">Выйти</button>
+      </div>
+    </header>
+
+    <!-- History Section -->
+    <section class="history-section">
+      <h2>История операций</h2>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Дата</th>
+            <th>Тип</th>
+            <th>Монета</th>
+            <th>Сумма</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          <!-- Данные будут добавлены JS -->
+        </tbody>
+      </table>
+    </section>
+
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
