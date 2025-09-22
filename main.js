@@ -116,15 +116,24 @@ function setAvatar(src) {
 window.onload = function() {
   const savedAvatar = localStorage.getItem("avatar");
   if (savedAvatar) {
-    document.getElementById("avatarImg").src = savedAvatar;
+    const avatarImg = document.getElementById("avatarImg");
+    if (avatarImg) avatarImg.src = savedAvatar;   // обновляем только если есть на странице
+
+    const headerAvatar = document.getElementById("headerAvatar");
+    if (headerAvatar) headerAvatar.src = savedAvatar; // обновляем хедер
   }
 
   const savedUsername = localStorage.getItem("username");
   if (savedUsername) {
-    document.getElementById("usernameDisplay").textContent = savedUsername;
-    document.getElementById("usernameText").textContent = savedUsername;
+    const usernameDisplay = document.getElementById("usernameDisplay");
+    if (usernameDisplay) usernameDisplay.textContent = savedUsername;
+
+    const usernameText = document.getElementById("usernameText");
+    if (usernameText) usernameText.textContent = savedUsername;
   }
 };
+
+
 
 
 /* ///////////////////////////////////////ACCOUNT/////////////////////////////////////////////////////////////////////////// */

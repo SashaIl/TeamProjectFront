@@ -4,6 +4,40 @@ body {
   font-family: 'Inter', Arial, sans-serif;
 }
 
+/* Header */
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: white;
+}
+
+.profile img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #6c63ff; /* фиолетовая обводка как в макете */
+  object-fit: cover;
+}
+
+.profile img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #6c63ff;
+  object-fit: cover;
+  cursor: pointer; /* курсор-рука */
+  transition: transform 0.2s;
+}
+
+.profile img:hover {
+  transform: scale(1.1);
+}
+
+/* Header */
+
+
 /* Фон для страницы логина */
 .login-body {
   background: #0d0d0d;
