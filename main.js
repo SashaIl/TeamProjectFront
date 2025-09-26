@@ -20,11 +20,15 @@ if (token) {
 }
 
 
+// Проверка "сессии" (токена)
+// if (localStorage.getItem("loggedIn") !== "true") {
+//   if (!window.location.pathname.endsWith("index.html")) {
+//     window.location.href = "index.html";
+//   }
+// }
 
-if (localStorage.getItem("loggedIn") !== "true") {
-  if (!window.location.pathname.endsWith("index.html")) {
-    window.location.href = "index.html";
-  }
+if (!localStorage.getItem("token") && !window.location.pathname.endsWith("index.html")) {
+  window.location.href = "index.html";
 }
 
 // Buttons Sound
@@ -102,10 +106,18 @@ if (loginForm) {
 
 
 // Выход
+// const logoutBtn = document.getElementById("logoutBtn");
+// if (logoutBtn) {
+//   logoutBtn.addEventListener("click", () => {
+//     localStorage.removeItem("loggedIn");
+//     window.location.href = "index.html";
+//   });
+// }
+
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("token");
     window.location.href = "index.html";
   });
 }
