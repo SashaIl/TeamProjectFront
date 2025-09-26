@@ -5,6 +5,15 @@
 //   }
 // }
 
+//  axios
+const api = axios.create({
+  baseURL: "http://localhost:5000/api", //URL ASP.NET API
+  headers: {
+    "Content-Type": "application/json"
+  }
+});
+
+
 if (localStorage.getItem("loggedIn") !== "true") {
   if (!window.location.pathname.endsWith("index.html")) {
     window.location.href = "index.html";
@@ -186,32 +195,77 @@ window.onload = function() {
     }
 
     // --- Валидация регистрации ---
-    if (registerBtn && errorMsg) {
-    registerBtn.addEventListener('click', () => {
-      const username = document.getElementById('reg-username').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const pass = document.getElementById('reg-password').value;
-      const pass2 = document.getElementById('reg-password2').value;
+    // if (registerBtn && errorMsg) {
+    // registerBtn.addEventListener('click', () => {
+    //   const username = document.getElementById('reg-username').value.trim();
+    //   const email = document.getElementById('reg-email').value.trim();
+    //   const pass = document.getElementById('reg-password').value;
+    //   const pass2 = document.getElementById('reg-password2').value;
 
-      if (username.length < 3) {
-        errorMsg.textContent = "Логин должен быть минимум 3 символа";
-        return;
+    //   if (username.length < 3) {
+    //     errorMsg.textContent = "Логин должен быть минимум 3 символа";
+    //     return;
+    //   }
+    //   if (!email.includes('@') || !email.includes('.')) {
+    //     errorMsg.textContent = "Введите корректный email";
+    //     return;
+    //   }
+    //   if (pass.length < 6) {
+    //     errorMsg.textContent = "Пароль должен быть минимум 6 символов";
+    //     return;
+    //   }
+    //   if (pass !== pass2) {
+    //     errorMsg.textContent = "Пароли не совпадают";
+    //     return;
+    //   }
+
+    if (registerBtn && errorMsg) {
+    registerBtn.addEventListener("click", async () => {
+    const username = document.getElementById("reg-username").value.trim();
+    const email = document.getElementById("reg-email").value.trim();
+    const pass = document.getElementById("reg-password").value;
+    const pass2 = document.getElementById("reg-password2").value;
+
+    if (username.length < 3) {
+      errorMsg.textContent = "Логин должен быть минимум 3 символа";
+      return;
+    }
+    if (!email.includes("@") || !email.includes(".")) {
+      errorMsg.textContent = "Введите корректный email";
+      return;
+    }
+    if (pass.length < 6) {
+      errorMsg.textContent = "Пароль должен быть минимум 6 символов";
+      return;
+    }
+    if (pass !== pass2) {
+      errorMsg.textContent = "Пароли не совпадают";
+      return;
+    }
+
+    try {
+      const response = await api.post("/auth/register", {
+        username,
+        email,
+        password: pass
+      });
+
+      if (response.data.success) {
+        errorMsg.textContent = "";
+        alert("Регистрация успешна!");
+
+        document.getElementById("username").value = username;
+        registerModal.style.display = "none";
+      } else {
+        errorMsg.textContent = response.data.message || "Ошибка регистрации";
       }
-      if (!email.includes('@') || !email.includes('.')) {
-        errorMsg.textContent = "Введите корректный email";
-        return;
-      }
-      if (pass.length < 6) {
-        errorMsg.textContent = "Пароль должен быть минимум 6 символов";
-        return;
-      }
-      if (pass !== pass2) {
-        errorMsg.textContent = "Пароли не совпадают";
-        return;
-      }
+    } catch (err) {
+      errorMsg.textContent = "Ошибка сервера, попробуйте позже";
+      console.error(err);
+    }
+
 
       errorMsg.textContent = "";
-      alert("Регистрация успешна!");
 
       // После регистрации подставляем логин в форму входа
       document.getElementById('username').value = username;
