@@ -195,32 +195,41 @@ window.onload = function() {
     }
 
     // --- Валидация регистрации ---
-    // if (registerBtn && errorMsg) {
-    // registerBtn.addEventListener('click', () => {
-    //   const username = document.getElementById('reg-username').value.trim();
-    //   const email = document.getElementById('reg-email').value.trim();
-    //   const pass = document.getElementById('reg-password').value;
-    //   const pass2 = document.getElementById('reg-password2').value;
+  //   if (registerBtn && errorMsg) {
+  //   registerBtn.addEventListener('click', () => {
+  //     const username = document.getElementById('reg-username').value.trim();
+  //     const email = document.getElementById('reg-email').value.trim();
+  //     const pass = document.getElementById('reg-password').value;
+  //     const pass2 = document.getElementById('reg-password2').value;
 
-    //   if (username.length < 3) {
-    //     errorMsg.textContent = "Логин должен быть минимум 3 символа";
-    //     return;
-    //   }
-    //   if (!email.includes('@') || !email.includes('.')) {
-    //     errorMsg.textContent = "Введите корректный email";
-    //     return;
-    //   }
-    //   if (pass.length < 6) {
-    //     errorMsg.textContent = "Пароль должен быть минимум 6 символов";
-    //     return;
-    //   }
-    //   if (pass !== pass2) {
-    //     errorMsg.textContent = "Пароли не совпадают";
-    //     return;
-    //   }
+  //     if (username.length < 3) {
+  //       errorMsg.textContent = "Логин должен быть минимум 3 символа";
+  //       return;
+  //     }
+  //     if (!email.includes('@') || !email.includes('.')) {
+  //       errorMsg.textContent = "Введите корректный email";
+  //       return;
+  //     }
+  //     if (pass.length < 6) {
+  //       errorMsg.textContent = "Пароль должен быть минимум 6 символов";
+  //       return;
+  //     }
+  //     if (pass !== pass2) {
+  //       errorMsg.textContent = "Пароли не совпадают";
+  //       return;
+  //     }
 
-    if (registerBtn && errorMsg) {
-    registerBtn.addEventListener("click", async () => {
+  //     errorMsg.textContent = "";
+
+  //     // После регистрации подставляем логин в форму входа
+  //     document.getElementById('username').value = username;
+
+  //     registerModal.style.display = 'none';
+  //   });
+  // }
+
+  if (registerBtn && errorMsg) {
+  registerBtn.addEventListener("click", async () => {
     const username = document.getElementById("reg-username").value.trim();
     const email = document.getElementById("reg-email").value.trim();
     const pass = document.getElementById("reg-password").value;
@@ -263,16 +272,9 @@ window.onload = function() {
       errorMsg.textContent = "Ошибка сервера, попробуйте позже";
       console.error(err);
     }
+  });
+}
 
-
-      errorMsg.textContent = "";
-
-      // После регистрации подставляем логин в форму входа
-      document.getElementById('username').value = username;
-
-      registerModal.style.display = 'none';
-    });
-  }
 
     /* ///////////////////////////////////////REGISTRATION/////////////////////////////////////////////////////////////////////////// */
 /* //////////////////////////////////////////////////////REGISTRATION////////////////////////////////////////////////////////// */
