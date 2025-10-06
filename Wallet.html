@@ -39,36 +39,15 @@
 </header>
 
 
-    <!-- Wallet Cards -->
-    <section class="cards">
-      <div class="card">
-        <h3>BTC</h3>
-        <p>0.5234 BTC</p>
-        <span>$25,430</span>
-        <div class="wallet-buttons">
-          <button class="wallet-btn">Пополнить</button>
-          <button class="wallet-btn">Вывести</button>
-        </div>
-      </div>
-      <div class="card">
-        <h3>ETH</h3>
-        <p>1.234 ETH</p>
-        <span>$3,420</span>
-        <div class="wallet-buttons">
-          <button class="wallet-btn">Пополнить</button>
-          <button class="wallet-btn">Вывести</button>
-        </div>
-      </div>
-      <div class="card">
-        <h3>USDT</h3>
-        <p>500 USDT</p>
-        <span>$500</span>
-        <div class="wallet-buttons">
-          <button class="wallet-btn">Пополнить</button>
-          <button class="wallet-btn">Вывести</button>
-        </div>
-      </div>
-    </section>
+<!-- Wallet Section -->
+<section class="wallet-section">
+  <div class="wallet-info">
+    <h2>Wallet ID: <span id="walletId">Загрузка...</span></h2>
+    <button id="rechargeWallet" class="wallet-btn main">Пополнить кошелёк</button>
+  </div>
+
+  <div id="walletCards" class="cards"></div>
+</section>
 
   </div>
 

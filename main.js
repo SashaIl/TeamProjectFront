@@ -381,3 +381,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // /////////////////////////////////////////// Все монеты Модалка ///////////////////////////////////////////
+
+
+/* ///////////////////////////////////////WALLET/////////////////////////////////////////////////////////////////////////// */
+/* //////////////////////////////////////////////////////WALLET////////////////////////////////////////////////////////// */
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const walletIdSpan = document.getElementById("walletId");
+  const walletCardsContainer = document.getElementById("walletCards");
+
+  if (!walletIdSpan || !walletCardsContainer) return; // значит, не на wallet.html
+
+  try {
+    // 1️ Получаем кошелёк пользователя
+    const walletResponse = await api.get("/wallet");
+    const wallet = walletResponse.data;
+
+    walletIdSpan.textContent = wallet.id || "Не найден";
+
+    // 2️ Получаем список монет пользователя
+    const coinsResponse = await api.get(`/wallet/${wallet.id}/coins`);
+    const coins = coinsResponse.data || [];
+
+    // 3️ Если монет нет
+    if (coins.length === 0) {
+      walletCardsContainer.innerHTML = `<p class="no-coins">Монеты пока отсутствуют</p>`;
+      return;
+    }
+
+    // 4️ Отрисовка карточек
+    walletCardsContainer.innerHTML = "";
+    coins.forEach((coin) => {
+      const card = document.createElement("div");
+      card.classList.add("card");
+      card.innerHTML = `
+        <h3>${coin.symbol}</h3>
+        <p>${coin.amount} ${coin.symbol}</p>
+        <span>$${coin.usdtValue.toFixed(2)}</span>
+        <div class="wallet-buttons">
+          <button class="wallet-btn">Пополнить</button>
+          <button class="wallet-btn">Вывести</button>
+        </div>
+      `;
+      walletCardsContainer.appendChild(card);
+    });
+  } catch (error) {
+    console.error("Ошибка при загрузке кошелька:", error);
+    walletIdSpan.textContent = "Ошибка загрузки";
+    walletCardsContainer.innerHTML = `<p class="no-coins">Не удалось загрузить данные</p>`;
+  }
+});
