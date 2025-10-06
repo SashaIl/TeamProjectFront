@@ -631,3 +631,94 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initExchange();
 });
+
+
+// Поиск
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const searchInput = document.querySelector('.header .search input');
+
+  // Создаём контейнер для результатов под полем поиска
+  const searchResults = document.createElement('div');
+  searchResults.className = 'search-results';
+  searchInput.parentElement.appendChild(searchResults);
+
+  // Модалка для инфы о монете
+  const coinInfoModal = document.createElement('div');
+  coinInfoModal.className = 'modal-coin-info';
+  coinInfoModal.id = 'coinInfoModal';
+  coinInfoModal.innerHTML = `
+    <div class="modal-coin-info-content">
+      <span class="close-coin-info" id="closeCoinInfo">&times;</span>
+      <div id="coinInfoContent"></div>
+    </div>
+  `;
+  document.body.appendChild(coinInfoModal);
+
+  const coinInfoContent = document.getElementById('coinInfoContent');
+  const closeCoinInfo = document.getElementById('closeCoinInfo');
+
+  let allCoins = [];
+
+  try {
+    // Получаем все монеты
+    const coinsRes = await api.get('/coins');
+    allCoins = coinsRes.data || [];
+  } catch (err) {
+    console.error('Ошибка загрузки монет для поиска:', err);
+  }
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim().toLowerCase();
+    searchResults.innerHTML = '';
+
+    if (!query) return;
+
+    const filtered = allCoins.filter(c =>
+      c.name.toLowerCase().includes(query) || c.symbol.toLowerCase().includes(query)
+    );
+
+    filtered.forEach(c => {
+      const div = document.createElement('div');
+      div.textContent = `${c.symbol} - ${c.name}`;
+      div.addEventListener('click', () => showCoinInfo(c.symbol));
+      searchResults.appendChild(div);
+    });
+  });
+
+  async function showCoinInfo(symbol) {
+    try {
+      const walletRes = await api.get('/wallet');
+      const walletId = walletRes.data.id;
+
+      const coinsRes = await api.get(`/wallet/${walletId}/coins`);
+      const userCoins = coinsRes.data || [];
+
+      const marketCoin = allCoins.find(c => c.symbol === symbol);
+      const userCoin = userCoins.find(c => c.symbol === symbol);
+
+      coinInfoContent.innerHTML = `
+        <img src="${marketCoin.iconUrl}" alt="${marketCoin.symbol}" style="width:50px;height:50px;">
+        <h3>${marketCoin.name} (${marketCoin.symbol})</h3>
+        <p>Цена: $${marketCoin.price.toFixed(2)}</p>
+        <p>На балансе: ${userCoin ? userCoin.amount : 0} ${symbol}</p>
+      `;
+
+      coinInfoModal.style.display = 'flex';
+      searchResults.innerHTML = '';
+      searchInput.value = '';
+    } catch (err) {
+      console.error('Ошибка загрузки инфы о монете:', err);
+      alert('Не удалось загрузить данные о монете.');
+    }
+  }
+
+  // Закрытие модалки
+  closeCoinInfo.addEventListener('click', () => {
+    coinInfoModal.style.display = 'none';
+  });
+
+  window.addEventListener('click', (e) => {
+    if (e.target === coinInfoModal) coinInfoModal.style.display = 'none';
+  });
+});
