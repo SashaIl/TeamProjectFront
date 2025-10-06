@@ -28,8 +28,8 @@ if (token) {
 // }
 
 
-// Закоментить для теста(Проверка токена, для запрета перехода на другие страницы)
-// if (!localStorage.getItem("token") && !window.location.pathname.endsWith("index.html")) {
+// Проверка токена, для запрета перехода на другие страницы
+// if (!localStorage.getItem("token") && !window.location.pathname.endsWith("index.html")) {  // Закоментить для теста
 //   window.location.href = "index.html";
 // }
 
@@ -473,51 +473,144 @@ window.addEventListener('load', () => {
   //   });
   // }
 
-  if (registerBtn && errorMsg) {
+
+// ................................Без двухфакторной аутентификации.............................................................
+
+//   if (registerBtn && errorMsg) {
+//   registerBtn.addEventListener("click", async () => {
+//     const username = document.getElementById("reg-username").value.trim();
+//     const email = document.getElementById("reg-email").value.trim();
+//     const pass = document.getElementById("reg-password").value;
+//     const pass2 = document.getElementById("reg-password2").value;
+
+//     if (username.length < 3) {
+//       errorMsg.textContent = "Логин должен быть минимум 3 символа";
+//       return;
+//     }
+//     if (!email.includes("@") || !email.includes(".")) {
+//       errorMsg.textContent = "Введите корректный email";
+//       return;
+//     }
+//     if (pass.length < 6) {
+//       errorMsg.textContent = "Пароль должен быть минимум 6 символов";
+//       return;
+//     }
+//     if (pass !== pass2) {
+//       errorMsg.textContent = "Пароли не совпадают";
+//       return;
+//     }
+
+//     try {
+//       const response = await api.post("/auth/register", {
+//         username,
+//         email,
+//         password: pass
+//       });
+
+//       if (response.data.success) {
+//         errorMsg.textContent = "";
+//         alert("Регистрация успешна!");
+
+//         document.getElementById("username").value = username;
+//         registerModal.style.display = "none";
+//       } else {
+//         errorMsg.textContent = response.data.message || "Ошибка регистрации";
+//       }
+//     } catch (err) {
+//       errorMsg.textContent = "Ошибка сервера, попробуйте позже";
+//       console.error(err);
+//     }
+//   });
+// }
+// ................................Без двухфакторной аутентификации.............................................................
+
+
+// .......................................Двухфакторная аутентификация.......................................................
+if (registerBtn && errorMsg) {
   registerBtn.addEventListener("click", async () => {
     const username = document.getElementById("reg-username").value.trim();
     const email = document.getElementById("reg-email").value.trim();
     const pass = document.getElementById("reg-password").value;
     const pass2 = document.getElementById("reg-password2").value;
 
-    if (username.length < 3) {
-      errorMsg.textContent = "Логин должен быть минимум 3 символа";
-      return;
-    }
-    if (!email.includes("@") || !email.includes(".")) {
-      errorMsg.textContent = "Введите корректный email";
-      return;
-    }
-    if (pass.length < 6) {
-      errorMsg.textContent = "Пароль должен быть минимум 6 символов";
-      return;
-    }
-    if (pass !== pass2) {
-      errorMsg.textContent = "Пароли не совпадают";
-      return;
-    }
+    // валидация
+    if (username.length < 3) { errorMsg.textContent = "Логин должен быть минимум 3 символа"; return; }
+    if (!email.includes("@") || !email.includes(".")) { errorMsg.textContent = "Введите корректный email"; return; }
+    if (pass.length < 6) { errorMsg.textContent = "Пароль должен быть минимум 6 символов"; return; }
+    if (pass !== pass2) { errorMsg.textContent = "Пароли не совпадают"; return; }
 
     try {
-      const response = await api.post("/auth/register", {
-        username,
-        email,
-        password: pass
+      // отправляем email для получения кода
+      const codeRes = await api.post("/auth/register/send-code", { username, email, password: pass });
+      if (!codeRes.data.success) {
+        errorMsg.textContent = codeRes.data.message || "Ошибка отправки кода";
+        return;
+      }
+
+      // показываем модалку ввода кода
+      showCodeModal(async (enteredCode) => {
+        try {
+          const verifyRes = await api.post("/auth/register/verify-code", {
+            username, email, password: pass, code: enteredCode
+          });
+
+          if (verifyRes.data.success) {
+            alert("Регистрация успешна!");
+            document.getElementById("username").value = username;
+            registerModal.style.display = "none";
+          } else {
+            alert(verifyRes.data.message || "Неверный код");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Ошибка сервера при подтверждении кода");
+        }
       });
 
-      if (response.data.success) {
-        errorMsg.textContent = "";
-        alert("Регистрация успешна!");
-
-        document.getElementById("username").value = username;
-        registerModal.style.display = "none";
-      } else {
-        errorMsg.textContent = response.data.message || "Ошибка регистрации";
-      }
     } catch (err) {
       errorMsg.textContent = "Ошибка сервера, попробуйте позже";
       console.error(err);
     }
   });
+}
+
+// .......................................Двухфакторная аутентификация.......................................................
+
+// --- Модалка ввода кода ---
+function showCodeModal(onSubmit) {
+  let modal = document.getElementById("codeModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "codeModal";
+    modal.className = "modal-code";
+    modal.innerHTML = `
+      <div class="modal-code-content">
+        <span class="close-code" id="closeCodeModal">&times;</span>
+        <h3>Введите код из письма</h3>
+        <input type="text" id="codeInput" maxlength="4" placeholder="0000">
+        <button id="submitCodeBtn">Подтвердить</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById("closeCodeModal").onclick = () => modal.style.display = "none";
+    window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
+  }
+
+  modal.style.display = "flex";
+
+  const submitBtn = document.getElementById("submitCodeBtn");
+  const codeInput = document.getElementById("codeInput");
+
+  submitBtn.onclick = () => {
+    const code = codeInput.value.trim();
+    if (code.length !== 4) {
+      alert("Введите 4-значный код");
+      return;
+    }
+    onSubmit(code);
+    modal.style.display = "none";
+  };
 }
 
 
