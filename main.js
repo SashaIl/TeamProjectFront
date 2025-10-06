@@ -332,51 +332,122 @@ window.onload = function() {
 // /////////////////////////////////////////// Все монеты Модалка ///////////////////////////////////////////
 
 // Ждём полной загрузки DOM
-document.addEventListener('DOMContentLoaded', () => {
+// document.addEventListener('DOMContentLoaded', () => {
+//   const allCoinsModal = document.getElementById('allCoinsModal');
+//   const showAllBtn = document.querySelector('.show-all-btn');
+//   const closeAllCoins = document.getElementById('closeAllCoins');
+//   const allCoinsList = document.getElementById('allCoinsList');
+
+//   // Заглушка: 30 монет
+//   const coinsData = [];
+//   for (let i = 1; i <= 30; i++) {
+//     coinsData.push({
+//       name: `COIN${i}`,
+//       price: `$${(Math.random() * 1000).toFixed(2)}`,
+//       icon: 'assets/images/coin-icon.png' // пока одинаковая иконка
+//     });
+//   }
+
+//   // Открытие модалки при клике на кнопку
+//   showAllBtn.addEventListener('click', () => {
+//     // Очистка списка перед добавлением
+//     allCoinsList.innerHTML = '';
+
+//     // Добавляем все монеты
+//     coinsData.forEach(coin => {
+//       const div = document.createElement('div');
+//       div.className = 'coin-item';
+//       div.innerHTML = `<img src="${coin.icon}" alt="${coin.name}"><span>${coin.name} - ${coin.price}</span>`;
+//       allCoinsList.appendChild(div);
+//     });
+
+//     // Показываем модалку
+//     allCoinsModal.style.display = 'flex';
+//   });
+
+//   // Закрытие при клике на крестик
+//   closeAllCoins.addEventListener('click', () => {
+//     allCoinsModal.style.display = 'none';
+//   });
+
+//   // Закрытие при клике вне модалки
+//   window.addEventListener('click', (e) => {
+//     if (e.target === allCoinsModal) {
+//       allCoinsModal.style.display = 'none';
+//     }
+//   });
+// });
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // --- Элементы карточек ---
+  const balanceCard = document.querySelector('.cards .card:nth-child(1) p');
+  const topUpCard = document.querySelector('.cards .card:nth-child(2) p');
+  const growthCard = document.querySelector('.cards .card:nth-child(3) p');
+
+  // --- Элементы бокового списка и модалки ---
+  const coinList = document.querySelector('.dashboard-right .coin-list');
   const allCoinsModal = document.getElementById('allCoinsModal');
   const showAllBtn = document.querySelector('.show-all-btn');
   const closeAllCoins = document.getElementById('closeAllCoins');
   const allCoinsList = document.getElementById('allCoinsList');
 
-  // Заглушка: 30 монет
-  const coinsData = [];
-  for (let i = 1; i <= 30; i++) {
-    coinsData.push({
-      name: `COIN${i}`,
-      price: `$${(Math.random() * 1000).toFixed(2)}`,
-      icon: 'assets/images/coin-icon.png' // пока одинаковая иконка
-    });
-  }
+  if (!balanceCard || !topUpCard || !growthCard || !coinList || !allCoinsModal || !showAllBtn || !closeAllCoins || !allCoinsList) return;
 
-  // Открытие модалки при клике на кнопку
-  showAllBtn.addEventListener('click', () => {
-    // Очистка списка перед добавлением
-    allCoinsList.innerHTML = '';
+  let allCoins = [];
 
-    // Добавляем все монеты
-    coinsData.forEach(coin => {
+  try {
+    // --- Получаем данные по кошельку ---
+    const walletRes = await api.get('/wallet');
+    const wallet = walletRes.data;
+
+    // --- Обновляем карточки ---
+    balanceCard.textContent = `$${wallet.balance.toFixed(2)}`;
+    topUpCard.textContent = `$${wallet.totalTopUp.toFixed(2)}`;
+    growthCard.textContent = `${wallet.balanceGrowth.toFixed(2)}%`;
+
+    // --- Получаем список монет ---
+    const coinsRes = await api.get(`/wallet/${wallet.id}/coins`);
+    allCoins = coinsRes.data || [];
+
+    // --- Боковой список: максимум 5 монет ---
+    coinList.innerHTML = '';
+    allCoins.slice(0, 5).forEach(c => {
       const div = document.createElement('div');
       div.className = 'coin-item';
-      div.innerHTML = `<img src="${coin.icon}" alt="${coin.name}"><span>${coin.name} - ${coin.price}</span>`;
-      allCoinsList.appendChild(div);
+      div.innerHTML = `<img src="${c.iconUrl}" alt="${c.symbol}"><span>${c.symbol} - $${c.usdtValue.toFixed(2)}</span>`;
+      coinList.appendChild(div);
     });
 
-    // Показываем модалку
+  } catch (err) {
+    console.error('Ошибка загрузки Dashboard:', err);
+    coinList.innerHTML = `<p>Не удалось загрузить данные</p>`;
+  }
+
+  // --- Открытие модалки со всеми монетами ---
+  showAllBtn.addEventListener('click', () => {
+    allCoinsList.innerHTML = '';
+    allCoins.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'coin-item';
+      div.innerHTML = `<img src="${c.iconUrl}" alt="${c.symbol}"><span>${c.symbol} - $${c.usdtValue.toFixed(2)}</span>`;
+      allCoinsList.appendChild(div);
+    });
     allCoinsModal.style.display = 'flex';
   });
 
-  // Закрытие при клике на крестик
+  // --- Закрытие модалки ---
   closeAllCoins.addEventListener('click', () => {
     allCoinsModal.style.display = 'none';
   });
 
-  // Закрытие при клике вне модалки
   window.addEventListener('click', (e) => {
     if (e.target === allCoinsModal) {
       allCoinsModal.style.display = 'none';
     }
   });
 });
+
+
 
 
 
