@@ -823,17 +823,51 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       // Отрисовка карточек
-      coins.forEach((coin) => {
-        const card = document.createElement("div");
-        card.classList.add("card");
-        card.innerHTML = `
-          <img src = "${coin.asset.logo}"></img>
-          <p>${coin.amount} ${coin.asset.symbol}</p>
-          <span>$${coin.asset.marketData.currPrice.toFixed(2)}</span>
-          <button onclick="showCoinInfo('${coin.asset.symbol}')">Подробнее</button>
-        `;
-        walletCardsContainer.appendChild(card);
-      });
+      //Карточка без позиции кнопки
+      // coins.forEach((coin) => {
+      //   const card = document.createElement("div");
+      //   card.classList.add("card");
+      //   card.innerHTML = `
+      //     <img src = "${coin.asset.logo}"></img>
+      //     <p>${coin.amount} ${coin.asset.symbol}</p>
+      //     <span>$${coin.asset.marketData.currPrice.toFixed(2)}</span>
+      //     <button class="wallet-btn main" onclick="showCoinInfo('${coin.asset.symbol}')">Подробнее</button>
+      //   `;
+      //   walletCardsContainer.appendChild(card);
+      // });
+
+    //со позицией кнопки
+    coins.forEach((coin) => {
+  const card = document.createElement("div");
+  card.classList.add("card");
+  card.style.position = "relative"; // чтобы позиционирование работало, если понадобится
+  card.innerHTML = `
+    <img src="${coin.asset.logo}" alt="${coin.asset.symbol}" style="display:block;margin:0 auto 10px auto;width:50px;height:50px;">
+    <p style="text-align:center;">${coin.amount} ${coin.asset.symbol}</p>
+    <span style="display:block;text-align:center;">$${coin.asset.marketData.currPrice.toFixed(2)}</span>
+    <button 
+      class="wallet-btn main" 
+      onclick="showCoinInfo('${coin.asset.symbol}')"
+      style="
+        display: block;
+        margin: 15px auto 0 auto;
+        width: 80%;
+        padding: 10px;
+        background: linear-gradient(135deg, #6a11cb, #b91372);
+        border: none;
+        color: #fff;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+      "
+    >
+      Подробнее
+    </button>
+  `;
+  walletCardsContainer.appendChild(card);
+});
+
     } catch (error) {
       console.error("Ошибка при загрузке кошелька:", error);
       walletIdSpan.textContent = "Ошибка загрузки";
