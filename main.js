@@ -540,39 +540,54 @@ if (registerBtn && errorMsg) {
     if (pass !== pass2) { errorMsg.textContent = "Пароли не совпадают"; return; }
 
     try {
-      // отправляем email для получения кода
-      const codeRes = await api.post("/auth/register/send-code", { username, email, password: pass });
-      if (!codeRes.data.success) {
-        errorMsg.textContent = codeRes.data.message || "Ошибка отправки кода";
+      // Отправляем только email, чтобы получить код
+      const sendRes = await api.post("/auth/register/send-code", { email });
+
+      const { message, status, data } = sendRes.data;
+
+      if (status !== "ok" || !data?.code) {
+        errorMsg.textContent = message || "Ошибка при отправке кода";
         return;
       }
 
-      // показываем модалку ввода кода
+      // Показываем модалку для ввода кода
       showCodeModal(async (enteredCode) => {
+        if (enteredCode !== String(data.code)) {
+          alert("Неверный код подтверждения");
+          return;
+        }
+
         try {
-          const verifyRes = await api.post("/auth/register/verify-code", {
-            username, email, password: pass, code: enteredCode
+          // Код верный — отправляем полные данные на сервер
+          const regRes = await api.post("/auth/register", {
+            email,
+            username,
+            password: pass
           });
 
-          if (verifyRes.data.success) {
+          const { message: regMsg, status: regStatus } = regRes.data;
+
+          if (regStatus === "ok") {
             alert("Регистрация успешна!");
             document.getElementById("username").value = username;
             registerModal.style.display = "none";
           } else {
-            alert(verifyRes.data.message || "Неверный код");
+            alert(regMsg || "Ошибка при регистрации");
           }
+
         } catch (err) {
           console.error(err);
-          alert("Ошибка сервера при подтверждении кода");
+          alert("Ошибка сервера при завершении регистрации");
         }
       });
 
     } catch (err) {
-      errorMsg.textContent = "Ошибка сервера, попробуйте позже";
       console.error(err);
+      errorMsg.textContent = "Ошибка сервера, попробуйте позже";
     }
   });
 }
+
 
 // .......................................Двухфакторная аутентификация.......................................................
 
