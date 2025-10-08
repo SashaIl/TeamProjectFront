@@ -163,11 +163,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     // 1️ Получаем кошелёк пользователя
-    const walletRes = await api.get("/wallet");
-    const walletId = walletRes.data.id;
+    // const walletRes = await api.get("/wallet");
+    // const walletId = walletRes.data.id;
 
     // 2️ Получаем историю операций
-    const historyRes = await api.get(`/wallet/${walletId}/history`);
+    const historyRes = (await api.get(`/Crypto/wallet-transactions?walletId=${userWalletId}`)).data;
     const historyData = historyRes.data || [];
 
     // 3️ Если истории нет
@@ -179,13 +179,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 4️ Отрисовка истории
     historyBody.innerHTML = "";
     historyData.forEach(item => {
+      const transType = item.transactionType;
+      if(transType == 0) item.transactionType = "Пополнение";
+      else if (transType == 2) item.transactionType = "Вывод";
+      else if (transType == 1) item.transactionType = "Обмен";
+      const symb = item.fromAsset;
+      let coin = item.fromAsset + " → " + item.toAsset;
+      if(item.toAsset == null) {
+        coin = item.fromAsset;
+      }
+      else if(item.fromAsset == null) {
+        coin = item.toAsset;
+      }
+      item.fromAsset = coin;
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${item.date}</td>
-        <td>${item.type}</td>
-        <td>${item.coin}</td>
-        <td>${item.amount}</td>
-        <td>${item.status}</td>
+        <td>${item.date.slice(0, 10)}</td>
+        <td>${item.transactionType}</td>
+        <td>${coin}</td>
+        <td>${item.amount}.${symb}</td>
+        <td>Выполнено</td>
       `;
       historyBody.appendChild(tr);
     });
