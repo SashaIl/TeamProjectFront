@@ -1226,3 +1226,65 @@ coinInfoContent.innerHTML = `
     if (e.target === coinInfoModal) coinInfoModal.style.display = 'none';
   });
 });
+
+
+///////////////////////////// ГРАФИК  ///////////////////////////////////////////
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const graphSelect = document.getElementById('graphSelect');
+  const graphPlaceholder = document.querySelector('.graph-placeholder');
+
+  let grapSelectCoin = [];
+
+  try {
+    // Получаем все монеты
+    const coinsRes = await api.get('/Crypto/assets');
+    grapSelectCoin = coinsRes.data.data || [];
+
+    // Заполняем селект опциями
+    grapSelectCoin.forEach(coin => {
+      const option = document.createElement('option');
+      option.value = coin.name;       // или coin.symbol, если нужно
+      option.textContent = coin.name;
+      graphSelect.appendChild(option);
+    });
+
+  } catch (err) {
+    console.error('Ошибка загрузки монет для поиска:', err);
+  }
+
+  async function loadGraph(cryptoId) {
+    const graphApiUrl = axios.create({
+      baseURL: `https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart?vs_currency=usd&days=7`,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    try {
+      const response = await graphApiUrl.get();
+      console.log(response.data);
+      // здесь можно добавить логику отображения графика
+      graphPlaceholder.textContent = `График для ${cryptoId} загружен`;
+    }
+    catch (err) {
+      console.error('Ошибка загрузки графика:', err);
+      alert('Не удалось загрузить график.');
+    }
+  }
+
+  // Загружаем график при смене выбора
+  graphSelect.addEventListener('change', (e) => {
+    const selectedCoin = e.target.value.toLowerCase();
+    console.log(selectedCoin);
+    
+    if (selectedCoin) {
+      loadGraph(selectedCoin);
+    }
+  });
+
+  // Можно сразу загрузить график первой монеты
+  // if (grapSelectCoin.length > 0) {
+  //   loadGraph(grapSelectCoin[0].id);
+  // }
+});
