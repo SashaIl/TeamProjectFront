@@ -307,13 +307,22 @@ function createChangeUsernameModal() {
       return;
     }
 
+
+ 
+
+    const token = localStorage.getItem('token');
     try {
-      const response = await api.patch('/user', { username: newUsername });
-      if (response.data.success) {
+      const response = await api.put('/User/change-login', { newLogin: newUsername }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.data.status === 1) {
         document.getElementById("usernameDisplay").textContent = newUsername;
         const usernameText = document.getElementById("usernameText");
         if (usernameText) usernameText.textContent = newUsername;
-        localStorage.setItem("username", newUsername);
+        localStorage.setItem("login", newUsername);
         alert('Юзернейм успешно изменён!');
         modal.style.display = 'none';
       } else {
