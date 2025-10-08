@@ -18,6 +18,11 @@ body {
   z-index: 100;
 }
 
+.modal-allcoins-content::-webkit-scrollbar {
+  width: 0;
+  height: 0
+}
+
 .modal-register-content,
 .modal-allcoins-content,
 .modal-avatars-content {
@@ -572,16 +577,16 @@ body, html {
   margin-top: 0;
 }
 
-.graph-placeholder {
-  /* height: 10px;
+/* .graph-placeholder {
+  height: 10px;
   border: 2px dashed #444;
   border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #666;
-  margin-top: 15px; */
-}
+  margin-top: 15px;
+} */
 
 /* Адаптивность */
 @media (max-width: 900px) {
@@ -1294,6 +1299,7 @@ body, html {
 
 .graphSelect {
   width: 100%;
+  margin-bottom: 25px;
   padding: 10px;
   border-radius: 10px;
   border: none;
@@ -1303,12 +1309,15 @@ body, html {
   cursor: pointer;
 }
 
-        /* #chart-container {
-            width: 45vw;
-            max-width: 1000px;
-            height: 300px;
-            background-color: #1A122A;
-        } */
+
+.graphSelect option {
+  background: #2a2a2a;
+}
+
+.graphSelect::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
 
 #chart-container {
   width: 100%;

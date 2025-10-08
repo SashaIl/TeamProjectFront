@@ -1311,9 +1311,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         mode: 'lines',
         type: 'scatter',
         name: cryptoId,
-        line: { color: '#00C853', width: 1.5 },
+        line: { color: '#ff0099', width: 1.5 },
         fill: 'tozeroy',
-        fillcolor: 'rgba(0,200,83,0.15)',
+        fillcolor: 'rgba(255, 0, 153, 0.15)',
         hoverinfo: 'skip',
       };
 
@@ -1334,9 +1334,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         title: false,
         autosize: true,
         height: 600,
+        width: 820,
+        margin: { t: 20, r: 55, b: 40, l: 20 },
         showlegend: false,
-        plot_bgcolor: '#1A122A',
-        paper_bgcolor: '#1A122A',
+        plot_bgcolor:  'rgba(26,26,26,0.85)',
+        paper_bgcolor: 'rgba(26,26,26,0.85)',
         font: { color: '#d8b4fe' },
         hovermode: 'x unified',
         hoverlabel: {
