@@ -469,11 +469,11 @@ window.addEventListener('load', () => {
       registerModal.style.display = 'none';
     });
 
-    window.addEventListener('click', (e) => {
-      if (e.target === registerModal) {
-        registerModal.style.display = 'none';
-      }
-    });
+    // window.addEventListener('click', (e) => {
+    //   if (e.target === registerModal) {
+    //     registerModal.style.display = 'none';
+    //   }
+    // });
     }
 
     // --- Валидация регистрации ---
@@ -650,7 +650,7 @@ function showCodeModal(onSubmit) {
     modal.innerHTML = `
       <div class="modal-code-content">
         <span class="close-code" id="closeCodeModal">&times;</span>
-        <h3>Введите код из письма</h3>
+        <h3 style="color: #000000ff;" >Введите код отправленный на почту</h3>
         <input type="text" id="codeInput" maxlength="4" placeholder="0000">
         <button id="submitCodeBtn">Подтвердить</button>
       </div>
@@ -658,7 +658,7 @@ function showCodeModal(onSubmit) {
     document.body.appendChild(modal);
 
     document.getElementById("closeCodeModal").onclick = () => modal.style.display = "none";
-    window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
+    // window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
   }
 
   modal.style.display = "flex";
@@ -939,27 +939,36 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   confirmRecharge.addEventListener("click", async () => {
-    const amount = parseFloat(rechargeAmount.value);
-    if (isNaN(amount) || amount <= 0) {
-      alert("Введите корректную сумму");
-      return;
-    }
+  const amount = parseFloat(rechargeAmount.value);
 
-    try {
-      const response = (await api.put(`/Crypto/deposit?walletId=${userWalletId}&amount=${amount}`)).data;
+  if (isNaN(amount) || amount <= 0) {
+    alert("Введите корректную сумму");
+    return;
+  }
 
-      if (response.status === 1) {
-        alert("Пополнение успешно выполнено!");
-        rechargeModal.style.display = "none";
-        loadWallet(); // обновляем кошелёк
-      } else {
-        alert(response.data.message || "Ошибка при пополнении");
-      }
-    } catch (err) {
-      console.error("Ошибка пополнения", err);
-      alert("Ошибка сервера при пополнении");
+  // 🔒 Блокируем кнопку, чтобы нельзя было нажать повторно
+  confirmRecharge.disabled = true;
+  confirmRecharge.textContent = "Обработка...";
+
+  try {
+    const response = (await api.put(`/Crypto/deposit?walletId=${userWalletId}&amount=${amount}`)).data;
+
+    if (response.status === 1) {
+      alert("Пополнение успешно выполнено!");
+      rechargeModal.style.display = "none";
+      await loadWallet(); // обновляем кошелёк
+    } else {
+      alert(response.data?.message || "Ошибка при пополнении");
     }
-  });
+  } catch (err) {
+    console.error("Ошибка пополнения", err);
+    alert("Ошибка сервера при пополнении");
+  } finally {
+    // 🔓 Возвращаем кнопку в исходное состояние
+    confirmRecharge.disabled = false;
+    confirmRecharge.textContent = "Пополнить";
+  }
+});
 
   rechargeWalletBtn.addEventListener("click", openRechargeModal);
 
@@ -978,6 +987,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const amountInput = document.getElementById('amount');
   const exchangeBtn = document.getElementById('exchangeBtn');
   const resultEl = document.getElementById('exchangeResult');
+  const usdtPriceSpan = document.getElementById('priceInUsdt');
 
   let userCoins = [];
   let marketCoins = [];
@@ -1011,6 +1021,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   fromSelect.addEventListener('change', () => {
     const coin = userCoins.find(c => c.asset.symbol === fromSelect.value);
+    usdtPriceSpan.textContent = coin ? coin.usdt.toFixed(6) + " USDT" : '';
+    console.log(coin);
+    
     if (coin) amountInput.placeholder = `Макс: ${coin.amount.toFixed(6)}`;
   });
 
@@ -1090,6 +1103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         userCoins = coinsRes.data || [];
         populateFromSelect();
         amountInput.value = '';
+        amountInput.placeholder = '';
         toSearchInput.value = '';
         selectedToCoin = null;
       } else {
