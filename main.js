@@ -381,8 +381,15 @@ function createChangePasswordModal() {
     }
 
     try {
-      const response = await api.patch('/user', { newPassword });
-      if (response.data.success) {
+      const response = await api.put('/User/change-password', { newPassword },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
+      if (response.data.status === 1) {
         alert('Пароль успешно изменён!');
         modal.style.display = 'none';
       } else {
