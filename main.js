@@ -1283,8 +1283,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Можно сразу загрузить график первой монеты
-  // if (grapSelectCoin.length > 0) {
-  //   loadGraph(grapSelectCoin[0].id);
-  // }
+  //Можно сразу загрузить график первой монеты
+  if (graphPlaceholder.textContent === 'Загрузка...') {
+    loadGraph(grapSelectCoin[0].name.toLowerCase());
+  }
 });
