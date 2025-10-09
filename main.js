@@ -1,10 +1,3 @@
-// Проверяем "сессию"
-// if (localStorage.getItem("loggedIn") === "true") {
-//   if (window.location.pathname.endsWith("index.html")) {
-//     window.location.href = "dashboard.html";
-//   }
-// }
-
 //  axios
 const api = axios.create({
   baseURL: "https://localhost:7164/api", //URL ASP.NET API
@@ -19,21 +12,11 @@ if (token) {
   api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }
 
-
-// Проверка "сессии" (токена)
-// if (localStorage.getItem("loggedIn") !== "true") {
-//   if (!window.location.pathname.endsWith("index.html")) {
-//     window.location.href = "index.html";
-//   }
-// }
-
-
 //Проверка токена, для запрета перехода на другие страницы
 if (!localStorage.getItem("token") && !window.location.pathname.endsWith("index.html")) {  // Закоментить для теста
   window.location.href = "index.html";
 }
 
-// Buttons Sound
 // Функция для воспроизведения звука
 function playSound(src, volume = 0.5) {
   const audio = new Audio(src);
@@ -58,26 +41,7 @@ function goToPage(page) {
 }
 
 
-
-// Логин
-// const loginForm = document.getElementById("loginForm");
-// if (loginForm) {
-//   loginForm.addEventListener("submit", (e) => {
-//     e.preventDefault();
-    
-//     const username = document.getElementById("username").value;
-//     const password = document.getElementById("password").value; // ЗАКОМЕНТИТЬ ЛОГИН ТЕСТ!!!
-
-//     // простая проверка
-//     if (username === "admin" && password === "1234") {
-//       localStorage.setItem("loggedIn", "true");
-//       window.location.href = "dashboard.html";
-//     } else {
-//       alert("Неверный логин или пароль");
-//     }
-//   });
-// }
-
+// login
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
@@ -113,15 +77,6 @@ if (loginForm) {
 
 const userWalletId = localStorage.getItem("walletId");
 
-// Выход
-// const logoutBtn = document.getElementById("logoutBtn");
-// if (logoutBtn) {
-//   logoutBtn.addEventListener("click", () => {   // ЗАКОМЕНТИТЬ ВЫХОД!!!!
-//     localStorage.removeItem("loggedIn");
-//     window.location.href = "index.html";
-//   });
-// }
-
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", () => {      // РАСКОМЕНТИТЬ ВЫХОД!!!!
@@ -133,39 +88,11 @@ if (logoutBtn) {
 /* ///////////////////////////////////////HISTORY/////////////////////////////////////////////////////////////////////////// */
 /* //////////////////////////////////////////////////////HISTORY////////////////////////////////////////////////////////// */
 
-// // Заглушка пока что
-// const historyData = [
-//   { date: '2025-09-22', type: 'Пополнение', coin: 'BTC', amount: '0.5', status: 'Успешно' },
-//   { date: '2025-09-21', type: 'Вывод', coin: 'ETH', amount: '1.2', status: 'В процессе' },
-//   { date: '2025-09-20', type: 'Обмен', coin: 'USDT→BTC', amount: '100', status: 'Успешно' },
-//   { date: '2025-09-19', type: 'Пополнение', coin: 'ETH', amount: '0.3', status: 'Успешно' },
-// ];
-
-// const historyBody = document.getElementById("historyBody");
-// if (historyBody) {
-//   historyData.forEach(item => {
-//     const tr = document.createElement("tr");
-//     tr.innerHTML = `
-//       <td>${item.date}</td>
-//       <td>${item.type}</td>
-//       <td>${item.coin}</td>
-//       <td>${item.amount}</td>
-//       <td>${item.status}</td>
-//     `;
-//     historyBody.appendChild(tr);
-//   });
-// }
-
-
 document.addEventListener("DOMContentLoaded", async () => {
   const historyBody = document.getElementById("historyBody");
   if (!historyBody) return; // если нет таблицы, значит не на странице History
 
   try {
-    // 1️ Получаем кошелёк пользователя
-    // const walletRes = await api.get("/wallet");
-    // const walletId = walletRes.data.id;
-
     // 2️ Получаем историю операций
     const historyRes = (await api.get(`/Crypto/wallet-transactions?walletId=${userWalletId}`)).data;
     const historyData = historyRes.data || [];
@@ -214,63 +141,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 /* ///////////////////////////////////////HISTORY/////////////////////////////////////////////////////////////////////////// */
 /* //////////////////////////////////////////////////////HISTORY////////////////////////////////////////////////////////// */
-
-/* ///////////////////////////////////////ACCOUNT/////////////////////////////////////////////////////////////////////////// */
-/* //////////////////////////////////////////////////////ACCOUNT////////////////////////////////////////////////////////// */
-
-
-// // Заглушки
-// function changeUsername() {
-//   const newUsername = prompt("Введите новый юзернейм:", "Admin");
-//   if (newUsername) {
-//     document.getElementById("usernameDisplay").textContent = newUsername;
-//     alert("Юзернейм успешно изменён!");
-//   }
-// }
-
-// function changePassword() {
-//   const newPassword = prompt("Введите новый пароль:");
-//   if (newPassword) {
-//     alert("Пароль успешно изменён!");
-//   }
-// }
-
-// // --- Модальное окно ---
-// function openAvatarModal() {
-//   document.getElementById("avatarModal").style.display = "flex";
-// }
-
-// function closeAvatarModal() {
-//   document.getElementById("avatarModal").style.display = "none";
-// }
-
-// // --- Установка аватарки ---
-// function setAvatar(src) {
-//   document.getElementById("avatarImg").src = src;
-//   localStorage.setItem("avatar", src);
-//   closeAvatarModal();
-// }
-
-// // --- Загрузка сохранённых данных ---
-// window.onload = function() {
-//   const savedAvatar = localStorage.getItem("avatar");
-//   if (savedAvatar) {
-//     const avatarImg = document.getElementById("avatarImg");
-//     if (avatarImg) avatarImg.src = savedAvatar;   // обновляем только если есть на странице
-
-//     const headerAvatar = document.getElementById("headerAvatar");
-//     if (headerAvatar) headerAvatar.src = savedAvatar; // обновляем хедер
-//   }
-
-//   const savedUsername = localStorage.getItem("username");
-//   if (savedUsername) {
-//     const usernameDisplay = document.getElementById("usernameDisplay");
-//     if (usernameDisplay) usernameDisplay.textContent = savedUsername;
-
-//     const usernameText = document.getElementById("usernameText");
-//     if (usernameText) usernameText.textContent = savedUsername;
-//   }
-// };
 
 // ================= ACCOUNT LOGIC ===================
 
@@ -469,98 +339,7 @@ window.addEventListener('load', () => {
       registerModal.style.display = 'none';
     });
 
-    // window.addEventListener('click', (e) => {
-    //   if (e.target === registerModal) {
-    //     registerModal.style.display = 'none';
-    //   }
-    // });
     }
-
-    // --- Валидация регистрации ---
-  //   if (registerBtn && errorMsg) {
-  //   registerBtn.addEventListener('click', () => {
-  //     const username = document.getElementById('reg-username').value.trim();
-  //     const email = document.getElementById('reg-email').value.trim();
-  //     const pass = document.getElementById('reg-password').value;
-  //     const pass2 = document.getElementById('reg-password2').value;
-
-  //     if (username.length < 3) {
-  //       errorMsg.textContent = "Логин должен быть минимум 3 символа";
-  //       return;
-  //     }
-  //     if (!email.includes('@') || !email.includes('.')) {
-  //       errorMsg.textContent = "Введите корректный email";
-  //       return;
-  //     }
-  //     if (pass.length < 6) {
-  //       errorMsg.textContent = "Пароль должен быть минимум 6 символов";
-  //       return;
-  //     }
-  //     if (pass !== pass2) {
-  //       errorMsg.textContent = "Пароли не совпадают";
-  //       return;
-  //     }
-
-  //     errorMsg.textContent = "";
-
-  //     // После регистрации подставляем логин в форму входа
-  //     document.getElementById('username').value = username;
-
-  //     registerModal.style.display = 'none';
-  //   });
-  // }
-
-
-// ................................Без двухфакторной аутентификации.............................................................
-
-//   if (registerBtn && errorMsg) {
-//   registerBtn.addEventListener("click", async () => {
-//     const username = document.getElementById("reg-username").value.trim();
-//     const email = document.getElementById("reg-email").value.trim();
-//     const pass = document.getElementById("reg-password").value;
-//     const pass2 = document.getElementById("reg-password2").value;
-
-//     if (username.length < 3) {
-//       errorMsg.textContent = "Логин должен быть минимум 3 символа";
-//       return;
-//     }
-//     if (!email.includes("@") || !email.includes(".")) {
-//       errorMsg.textContent = "Введите корректный email";
-//       return;
-//     }
-//     if (pass.length < 6) {
-//       errorMsg.textContent = "Пароль должен быть минимум 6 символов";
-//       return;
-//     }
-//     if (pass !== pass2) {
-//       errorMsg.textContent = "Пароли не совпадают";
-//       return;
-//     }
-
-//     try {
-//       const response = await api.post("/user/create-account", {
-//         username,
-//         //email,
-//         password: pass
-//       });
-
-//       if (response.data.success) {
-//         errorMsg.textContent = "";
-//         alert("Регистрация успешна!");
-
-//         document.getElementById("username").value = username;
-//         registerModal.style.display = "none";
-//       } else {
-//         errorMsg.textContent = response.data.message || "Ошибка регистрации";
-//       }
-//     } catch (err) {
-//       errorMsg.textContent = "Ошибка сервера, попробуйте позже";
-//       console.error(err);
-//     }
-//   });
-// }
-// ................................Без двухфакторной аутентификации.............................................................
-
 
 // .......................................Двухфакторная аутентификация.......................................................
 if (registerBtn && errorMsg) {
@@ -658,7 +437,6 @@ function showCodeModal(onSubmit) {
     document.body.appendChild(modal);
 
     document.getElementById("closeCodeModal").onclick = () => modal.style.display = "none";
-    // window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
   }
 
   modal.style.display = "flex";
@@ -682,53 +460,6 @@ function showCodeModal(onSubmit) {
 /* //////////////////////////////////////////////////////REGISTRATION////////////////////////////////////////////////////////// */
 
 // /////////////////////////////////////////// Все монеты Модалка ///////////////////////////////////////////
-
-// Ждём полной загрузки DOM
-// document.addEventListener('DOMContentLoaded', () => {
-//   const allCoinsModal = document.getElementById('allCoinsModal');
-//   const showAllBtn = document.querySelector('.show-all-btn');
-//   const closeAllCoins = document.getElementById('closeAllCoins');
-//   const allCoinsList = document.getElementById('allCoinsList');
-
-//   // Заглушка: 30 монет
-//   const coinsData = [];
-//   for (let i = 1; i <= 30; i++) {
-//     coinsData.push({
-//       name: `COIN${i}`,
-//       price: `$${(Math.random() * 1000).toFixed(2)}`,
-//       icon: 'assets/images/coin-icon.png' // пока одинаковая иконка
-//     });
-//   }
-
-//   // Открытие модалки при клике на кнопку
-//   showAllBtn.addEventListener('click', () => {
-//     // Очистка списка перед добавлением
-//     allCoinsList.innerHTML = '';
-
-//     // Добавляем все монеты
-//     coinsData.forEach(coin => {
-//       const div = document.createElement('div');
-//       div.className = 'coin-item';
-//       div.innerHTML = `<img src="${coin.icon}" alt="${coin.name}"><span>${coin.name} - ${coin.price}</span>`;
-//       allCoinsList.appendChild(div);
-//     });
-
-//     // Показываем модалку
-//     allCoinsModal.style.display = 'flex';
-//   });
-
-//   // Закрытие при клике на крестик
-//   closeAllCoins.addEventListener('click', () => {
-//     allCoinsModal.style.display = 'none';
-//   });
-
-//   // Закрытие при клике вне модалки
-//   window.addEventListener('click', (e) => {
-//     if (e.target === allCoinsModal) {
-//       allCoinsModal.style.display = 'none';
-//     }
-//   });
-// });
 
 document.addEventListener('DOMContentLoaded', async () => {
   // --- Элементы карточек ---
@@ -829,15 +560,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!walletIdSpan || !walletCardsContainer || !rechargeWalletBtn) return;
 
   let walletId = null;
-  //const userWalletId = localStorage.getItem("walletId");
-
-  
 
   async function loadWallet() {
     try {
       const walletResponse = (await api.get(`/Crypto/wallets/${userWalletId}`)).data;
-      //const wallet = walletResponse.data;
-      //walletId = wallet.id;
 
       walletIdSpan.textContent = walletResponse.data.walletId || "Не найден";
 
@@ -853,25 +579,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      // Отрисовка карточек
-      //Карточка без позиции кнопки
-      // coins.forEach((coin) => {
-      //   const card = document.createElement("div");
-      //   card.classList.add("card");
-      //   card.innerHTML = `
-      //     <img src = "${coin.asset.logo}"></img>
-      //     <p>${coin.amount} ${coin.asset.symbol}</p>
-      //     <span>$${coin.asset.marketData.currPrice.toFixed(2)}</span>
-      //     <button class="wallet-btn main" onclick="showCoinInfo('${coin.asset.symbol}')">Подробнее</button>
-      //   `;
-      //   walletCardsContainer.appendChild(card);
-      // });
-
     //со позицией кнопки
     coins.forEach((coin) => {
   const card = document.createElement("div");
   card.classList.add("userCard");
-  //card.style.position = "relative"; // чтобы позиционирование работало, если понадобится
   card.innerHTML = `
     <img src="${coin.asset.logo}" alt="${coin.asset.symbol}" style="display:block;margin:0 auto 10px auto;width:50px;height:50px;">
     <p style="text-align:center;">${coin.amount} ${coin.asset.symbol}</p>
@@ -1179,21 +890,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
  window.showCoinInfo = async function(symbol) {
     try {
-      // const walletRes = await api.get('/wallet');
-      // const walletId = walletRes.data.id;
-
-      // const coinsRes = await api.get(`/wallet/${walletId}/coins`);
-      // const userCoins = coinsRes.data || [];
-
       const marketCoin = allCoins.find(c => c.symbol === symbol);
       console.log(marketCoin);
       console.log(marketCoin.price);
       console.log(marketCoin.iconUrl);
-      
-      
-      
-      //const userCoin = userCoins.find(c => c.symbol === symbol);
-
       console.log(marketCoin.currPrice);
       
 
@@ -1258,7 +958,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     grapSelectCoin.forEach(coin => {
       const option = document.createElement('option');
-      // используем id, если он есть (CoinGecko принимает ID)
       option.value = (coin.id || coin.name).toLowerCase().replace(/\s+/g, '-');
       option.textContent = coin.name;
       graphSelect.appendChild(option);
@@ -1292,8 +991,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 3. ЗАГРУЗКА И ОТОБРАЖЕНИЕ ГРАФИКА
   // ----------------------------------------------------------------------
   async function loadGraph(cryptoId) {
-    // graphPlaceholder.textContent = `Загрузка графика для ${cryptoId}...`;
-
     try {
       const response = await axios.get(
         `https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart`,
@@ -1405,7 +1102,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (err) {
       console.error('Ошибка загрузки графика:', err);
-      //graphPlaceholder.textContent = `Не удалось загрузить график для ${cryptoId}`;
     }
   }
 
