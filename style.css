@@ -579,6 +579,8 @@ body, html {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
+  box-shadow: 0 0 15px #6a11cb, 0 0 25px #b91372;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .header .profile button:hover {
@@ -719,6 +721,8 @@ body, html {
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
+  box-shadow: 0 0 15px #6a11cb, 0 0 25px #b91372;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .show-all-btn:hover {
@@ -878,6 +882,8 @@ body, html {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
+  box-shadow: 0 0 15px #6a11cb, 0 0 25px #b91372;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .exchange-row button:hover {
@@ -996,6 +1002,8 @@ body, html {
   cursor: pointer;
   transition: all 0.3s;
   width: fit-content;
+  box-shadow: 0 0 15px #6a11cb, 0 0 25px #b91372;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .user-info button:hover {
@@ -1286,6 +1294,8 @@ body, html {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s;
+  box-shadow: 0 0 15px #6a11cb, 0 0 25px #b91372;
+  animation: fadeIn 1s ease-out;
 }
 
 .rechargeButton:hover {
