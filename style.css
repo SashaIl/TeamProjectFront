@@ -494,13 +494,28 @@ body, html {
   box-shadow: 2px 0 10px rgba(0,0,0,0.5);
 }
 
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px; 
+  margin-bottom: 40px;
+}
 
-.sidebar .logo {
+.sidebarLogo {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(0,0,0,0.4));
+}
+
+
+/* .sidebar .logo {
   color: #fff;
   font-size: 20px;
   margin-bottom: 40px;
   text-align: center;
-}
+} */
 
 .sidebar nav ul {
   list-style: none;
