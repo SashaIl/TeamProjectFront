@@ -592,7 +592,9 @@ body, html {
   display: flex;
   gap: 20px;
   margin-bottom: 30px;
+  animation: fadeIn 1s ease-in-out;
 }
+
 
 .card {
   flex: 1;
@@ -629,6 +631,7 @@ body, html {
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 0 20px rgba(106, 17, 203, 0.2);
+  animation: fadeIn 1.5s ease-in-out;
 }
 
 .graph:hover {
@@ -1419,3 +1422,27 @@ body, html {
   width: 100%;
   height: 600px;
 }
+
+/* .........................Бегущая строка....................... */
+
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  width: 580px;
+  background: none;
+  color: #b91372;
+  padding: 10px 0;
+  font-family: monospace;
+}
+
+.track {
+  display: inline-block;
+  animation: scroll 160s linear infinite;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
