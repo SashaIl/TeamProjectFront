@@ -13,9 +13,9 @@ if (token) {
 }
 
 //Проверка токена, для запрета перехода на другие страницы
-if (!localStorage.getItem("token") && !window.location.pathname.endsWith("index.html")) {  // Закоментить для теста
-  window.location.href = "index.html";
-}
+// if (!localStorage.getItem("token") && !window.location.pathname.endsWith("index.html")) {  // Закоментить для теста
+//   window.location.href = "index.html";
+// }
 
 // Функция для воспроизведения звука
 function playSound(src, volume = 0.5) {
